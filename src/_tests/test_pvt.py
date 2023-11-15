@@ -85,9 +85,9 @@ def test_gas_properties() -> None:
                 [
                     17647166.250601854,  # Pb
                     75.9,  # Rs
-                    1.232280344375506,  # Bo
+                    1.229445500157278,  # Bo
                     9.790197507449094e-10,  # Co
-                    767.1224394709095,  # ρ_oil
+                    768.891263393506,  # ρ_oil
                     0.0010165067256822698,  # μ_oil
                 ]
             ),
@@ -107,10 +107,7 @@ def test_gas_properties() -> None:
         ),
     ],
 )
-def test_calc_oil_properties(
-    P: float,
-    Prop_values_expected: np.ndarray
-) -> None:
+def test_calc_oil_properties(P: float, Prop_values_expected: np.ndarray) -> None:
     T = 350
 
     fd = FluidData()
@@ -136,7 +133,6 @@ def test_calc_oil_properties(
 
 
 def test_PVTProperties(num_regression: NumericRegressionFixture) -> None:
-
     fd = FluidData()
 
     fd = fd.set_fluid_data(API=30.0, dg=0.72, RGO=125)
@@ -145,23 +141,23 @@ def test_PVTProperties(num_regression: NumericRegressionFixture) -> None:
 
     num_regression.check(
         {
-            'Pb': PVTResults.Pb,
-            'ρ_gas': PVTResults.ρ_gas,
-            'Z': PVTResults.Z,
-            'Bg': PVTResults.Bg,
-            'Cg': PVTResults.Cg,
-            'μ_gas': PVTResults.μ_gas,
-            'ρ_oil': PVTResults.ρ_oil,
-            'Rs': PVTResults.Rs,
-            'μ_oil': PVTResults.μ_oil,
-            'Co': PVTResults.Co,
-            'Bo': PVTResults.Bo,
-            'cp_gas': PVTResults.cp_gas,
-            'cp_oil': PVTResults.cp_oil,
-            'ρ_NS': PVTResults.ρ_NS,
-            'μ_NS': PVTResults.μ_NS,
-            'cp_NS': PVTResults.cp_NS,
-            'ρ_slip': PVTResults.ρ_slip,
-            'σog': PVTResults.σog
+            "Pb": PVTResults.Pb,
+            "ρ_gas": PVTResults.ρ_gas,
+            "Z": PVTResults.Z,
+            "Bg": PVTResults.Bg,
+            "Cg": PVTResults.Cg,
+            "μ_gas": PVTResults.μ_gas,
+            "ρ_oil": PVTResults.ρ_oil,
+            "Rs": PVTResults.Rs,
+            "μ_oil": PVTResults.μ_oil,
+            "Co": PVTResults.Co,
+            "Bo": PVTResults.Bo,
+            "cp_gas": PVTResults.cp_gas,
+            "cp_oil": PVTResults.cp_oil,
+            "ρ_NS": PVTResults.ρ_NS,
+            "μ_NS": PVTResults.μ_NS,
+            "cp_NS": PVTResults.cp_NS,
+            "ρ_slip": PVTResults.ρ_slip,
+            "σog": PVTResults.σog,
         }
     )

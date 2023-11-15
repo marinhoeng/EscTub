@@ -72,7 +72,6 @@ instance/
 docs/_build/
 
 # PyBuilder
-.idea/
 .pybuilder/
 target/
 
