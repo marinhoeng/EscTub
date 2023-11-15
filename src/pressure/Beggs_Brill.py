@@ -1,8 +1,8 @@
 import math as m
-from Flow_Velocity import flow_velocity_in_situ
+from Flow_Velocity import FlowVelocity
 
 
-def calculate_Beggs_Brill(fv: flow_velocity_in_situ) -> float:
+def calculate_Beggs_Brill(fv: FlowVelocity) -> float:
     ρL = 0.
     λL = fv.λL
     Vsl = fv.Vsl

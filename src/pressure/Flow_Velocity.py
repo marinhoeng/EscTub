@@ -1,53 +1,46 @@
 import math as m
-from fluid_data import FluidData
-from oil_properties import (calculate_Pb,
-                            calculate_Rs,
-                            calculate_Bg,
-                            calculate_Bosat,
-                            calculate_Bosubsat
-                            )
+from pvt.fluid_data import FluidData
+from pvt.oil_properties import (calculate_Pb,
+                                calculate_Rs,
+                                calculate_Bg,
+                                calculate_Bo)
 
 
-class flow_velocity_in_situ:
-    def __init__(self, Qo, Qg, Ql, Vsl, Vsg, Vm, λL):
-        self.Qo: float = Qo
-        self.Qg: float = Qg
-        self.Ql: float = Ql
-        self.Vsl: float = Vsl
-        self.Vsg: float = Vsg
-        self.Vm: float = Vm
-        self.λL: float = λL
+class FlowVelocity:
+    def __init__(self, Qo, Qg, Qgsc, Ql, Vsl, Vsg, λL):
+        self.Qo = Qo
+        self.Qg = Qg
+        self.Qgsc = Qgsc
+        self.Ql = Ql
+        self.Vsl = Vsl
+        self.Vsg = Vsg
+        self.Vm = Vsl + Vsg
+        self.λL = λL
 
 
-def calculate_flow_velocity_in_situ(fd: FluidData, Qlsc: float, P: float, T: float, Z: float) -> flow_velocity:
+def calculate_flow_velocity(fd: FluidData, Qlsc: float, P: float, T: float, Z: float) -> FlowVelocity:
     Pb = calculate_Pb(fd=fd, P=P, T=T)
     Rs = calculate_Rs(fd=fd, P=P, T=T)
     Bg = calculate_Bg(fd=fd, P=P, T=T, Z=Z)
+    Bo = calculate_Bo(fd=fd, P=P, T=T, Rs=Rs, Pb=Pb)
 
     Qostd = Qlsc
     Ap = (m.pi * fd.dh ** 2) / 4
+    Qo = Qostd * Bo
 
     if P > Pb:
-        Qo = Qostd * Bosat
-        Ql = Qo
-        Vsl = Ql / Ap
-        λL = 1
+        Vsl = Qo / Ap
+        λL = 1.
         Vsg = 0.
-        Vm = Vsl
         Qg = 0.
-
+        Qgsc = 0.
     else:
-        Qo = Qostd * Bosubsat
-        Ql = Qo
-        Vsl = Ql / Ap
-        Qgsc = fd.RGO * Qlsc  # RGO = RGL and BSW = 0
-
-        Qg = (fd.RGO - Rs) * Qostd * Bg  # For RSW = 0
-
+        Vsl = Qo / Ap
+        Qgsc = fd.RGO * Qlsc
+        Qg = (fd.RGO - Rs) * Qostd * Bg
         Vsg = Qg / Ap
-        Vm = Vsl + Vsg
-        λL = Vsl / Vm
+        λL = Vsl / (Vsl + Vsg)
 
-    return flow_velocity(Qo, Qg, Qgsc, Ql, Vsl, Vsg, Vm, λL)
+    return FlowVelocity(Qo, Qg, Qgsc, Qo, Vsl, Vsg, λL)
 
 # Giovanna_test
