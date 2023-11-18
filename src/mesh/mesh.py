@@ -1,6 +1,5 @@
 import numpy as np
 from typing import Sequence
-
 from attrs import define
 from thermal.tec import tec_section, calculate_tec_section
 
@@ -47,17 +46,17 @@ class OperationalData:
 
 
 @define(frozen=True)
+class FlowData:
+    Q: float
+
+
+@define(frozen=True)
 class GeometryData:
     dh: float
     εr: float
     θ: float
     tec: float
     T_env: float
-
-
-@define(frozen=True)
-class FlowData:
-    Q: float
 
 
 @define(frozen=True)
@@ -71,85 +70,110 @@ class MeshData:
 def building_mesh(data: InputData) -> list[MeshData]:
     full_mesh_list = []
 
-    # System data
-    sections_well = np.ceil(data.L_well / data.dL_well)
-    sections_flowline = np.ceil(data.L_flowline / data.dL_flowline)
-    sections_riser = np.ceil(data.L_riser / data.dL_riser)
-
-    L_total = data.L_well + data.L_flowline + data.L_riser
-
     # Auxiliary functions
     def calculate_env_temperature_gradient(
-        T_env_top: float, T_env_button: float, L_section: float
+        T_env_top: float, T_env_button: float, TVD_section: float
     ) -> float:
-        return (T_env_top - T_env_button) / L_section
+        return (T_env_top - T_env_button) / TVD_section
 
-    def calculate_env_temperature(MD: float, T_button: float, T_grad: float) -> float:
-        return T_button + T_grad * MD
+    def calculate_env_temperature(TVD: float, T_button: float, T_grad: float) -> float:
+        return T_button + T_grad * TVD
 
-    def get_section_tec(MD: float, tec_sections: Sequence[tec_section]) -> float:
+    def get_section_tec(
+        MD_start: float, MD_end: float, tec_sections: Sequence[tec_section]
+    ) -> float:
         N_sections = len(tec_sections)
-        tec = np.nan
+        tec_calc = np.nan
 
         for sec in range(N_sections):
             mdi = tec_sections[sec].mdi
             mdf = tec_sections[sec].mdf
 
-            if mdi <= MD < mdf:
-                tec = calculate_tec_section(tec_sections[sec])
+            if mdi <= MD_start < mdf:
+                tec_calc = calculate_tec_section(tec_sections[sec])
                 break
             else:
                 continue
 
-        return tec
+        return tec_calc
 
     # Well section data
-    dL = data.dL_well
-    L_well = data.L_well
-    dh_well = data.dh_well
-    θ_well = data.θ_well
-    ε_well = data.ε_well
+    sections_well = int(np.ceil(data.L_well / data.dL_well))
+    sections_flowline = int(np.ceil(data.L_flowline / data.dL_flowline))
+    sections_riser = int(np.ceil(data.L_riser / data.dL_riser))
+
     T_grad_well = calculate_env_temperature_gradient(
-        T_env_top=data.Tenv_seabed, T_env_button=data.Tenv_res, L_section=data.L_well
+        T_env_top=data.Tenv_seabed, T_env_button=data.Tenv_res, TVD_section=data.L_well
     )
-    T_well_button = InputData.Tenv_res
 
-    # Well Section
-    MDi = 0
+    T_grad_flowline = 0.0
+
+    T_grad_riser = calculate_env_temperature_gradient(
+        T_env_top=data.Tenv_sc, T_env_button=data.Tenv_seabed, TVD_section=data.L_riser
+    )
+
+    sec_number = [
+        0,
+        sections_well,
+        sections_well + sections_flowline,
+        sections_well + sections_flowline + sections_riser,
+    ]
+    sec_L = [
+        data.L_well,
+        data.L_well + data.L_flowline,
+        data.L_well + data.L_flowline + data.L_riser,
+    ]
+    sec_dL = [data.dL_well, data.dL_flowline, data.dL_riser]
+    sec_dh = [data.dh_well, data.dh_flowline, data.dh_riser]
+    sec_θ = [data.θ_well, data.θ_flowline, data.θ_riser]
+    sec_ε = [data.ε_well, data.ε_flowline, data.ε_riser]
+    sec_T_button = [data.Tenv_res, data.Tenv_seabed, data.Tenv_seabed]
+    sec_T_grad = [T_grad_well, T_grad_flowline, T_grad_riser]
+
     MDf = 0
+    for k in range(0, 3):
+        dL = sec_dL[k]
+        for i in range(sec_number[k], sec_number[k + 1]):
+            # Initial and Final positions of the actual section [m].
+            MDi = MDf
+            MDf = MDi + dL
 
-    for i in range(0, sections_well):
-        MDi = MDf
+            if MDf > sec_L[k]:
+                dL = sec_L[k] - MDi
+                MDf = sec_L[k]
 
-        MDf = MDi + dL
+            # Hydraulic diameter [m].
+            dh = sec_dh[k]
 
-        if MDf > L_well:
-            dL = L_well - MDi
-            MDf = L_well
+            # Relative rugosity [-].
+            εr = sec_ε[k] / sec_dh[k]
 
-        # Hydraulic diameter [m]
-        dh = dh_well
+            # Inclination [rad].
+            θ = np.deg2rad(sec_θ[k])
 
-        # Relative rugosity [-].
-        εr = ε_well / dh
+            if k == 0:  # well
+                δ_TVD = MDf
+            elif k == 1:  # flowline
+                δ_TVD = sec_L[0]
+            else:  # riser
+                δ_TVD = MDf - sec_L[1]
 
-        # Inclination [rad]
-        θ = np.deg2rad(θ_well)
+            # Thermal Exchange Coefficient [].
+            tec = get_section_tec(
+                MD_start=MDi, MD_end=MDf, tec_sections=data.tec_sections
+            )
 
-        tec = get_section_tec(MD=MDi, tec_sections=InputData.tec_sections)
+            # Environment temperature [K].
+            T_env = calculate_env_temperature(
+                TVD=δ_TVD, T_button=sec_T_button[k], T_grad=sec_T_grad[k]
+            )
 
-        T_env = calculate_env_temperature(
-            MD=MDf, T_button=T_well_button, T_grad=T_grad_well
-        )
+            # Saving the geometry data
+            geometry = GeometryData(dh=dh, εr=εr, θ=θ, tec=tec, T_env=T_env)
 
-        geometry = GeometryData(dh=dh, εr=εr, θ=θ, tec=tec, T_env=T_env)
+            # Saving the mesh data
+            mesh = MeshData(geometry=geometry, dL=dL, MDi=MDi, MDf=MDf)
 
-        mesh = MeshData(geometry=geometry, dL=dL, MDi=MDi, MDf=MDf)
-
-        full_mesh_list.append(mesh)
+            full_mesh_list.append(mesh)
 
     return full_mesh_list
-
-
-def test_well() -> None:
-    assert 1 == 1
