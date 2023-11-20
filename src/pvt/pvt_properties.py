@@ -38,13 +38,11 @@ class PVTProperties:
     ρ_NS: float | None = None
     μ_NS: float | None = None
     cp_NS: float | None = None
-    cp_slip: float | None = None
     ρ_slip: float | None = None
     σog: float | None = None
 
 
-def calculate_pvt_properties(fd: FluidData, P: float, T: float, λL: float | None = None,
-                             HL: float | None = None) -> PVTProperties:
+def calculate_pvt_properties(fd: FluidData, P: float, T: float, λL: float, HL: float) -> PVTProperties:
     Pb = calculate_Pb(fd=fd, T=T)
 
     if P < Pb:
@@ -72,19 +70,15 @@ def calculate_pvt_properties(fd: FluidData, P: float, T: float, λL: float | Non
     cp_oil = calculate_cp_oil(fd=fd, P=P, T=T)
 
     # Mixture properties
-    ρ_NS = None
-    μ_NS = None
-    cp_NS = None
-    cp_slip = None
-    ρ_slip = None
-    σog = None
-    if λL is not None and HL is not None:
-        ρ_NS = ρ_oil * λL + ρ_gas * (1. - λL)
-        μ_NS = μ_oil * λL + μ_gas * (1. - λL)
-        cp_NS = cp_oil * λL + cp_gas * (1. - λL)
-        cp_slip = cp_oil * HL + cp_gas * (1. - HL)
-        ρ_slip = ρ_oil * HL + ρ_gas * (1. - HL)
-        σog = 0.00841  # N/m
+    ρ_NS = ρ_oil * λL + ρ_gas * (1. - λL)
+
+    μ_NS = μ_oil * λL + μ_gas * (1. - λL)
+
+    cp_NS = cp_oil * λL + cp_gas * (1. - λL)
+
+    ρ_slip = ρ_oil * HL + ρ_gas * (1. - HL)
+
+    σog = 0.00841  # N/m
 
     return PVTProperties(
         Pb=Pb,
@@ -103,7 +97,6 @@ def calculate_pvt_properties(fd: FluidData, P: float, T: float, λL: float | Non
         ρ_NS=ρ_NS,
         μ_NS=μ_NS,
         cp_NS=cp_NS,
-        cp_slip=cp_slip,
         ρ_slip=ρ_slip,
         σog=σog,
     )
