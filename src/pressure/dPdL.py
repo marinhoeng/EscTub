@@ -1,31 +1,19 @@
 import math as m
-from pvt.fluid_data import FluidData
 from Beggs_Brill import calculate_Beggs_Brill
-from Flow_Velocity import FlowVelocity
 
 
-def calculate_y(fv: FlowVelocity) -> float:
+def calculate_y() -> float:
     HL = calculate_Beggs_Brill(fv=fv)
     y = fv.λL / HL ** 2
     return y
 
 
-def calculate_rugosidade() -> float:
-    el = e / dh
-
-    return el
+def calculate_Re_NS(ρ_NS: float, Vm: float, dh: float, μ_NS: float) -> float:
+    return (ρ_NS * Vm * dh) / μ_NS
 
 
-def calculate_Re_NS(fv: FlowVelocity) -> float:
-    ReNS = (ρ_NS * fv.Vm * dh) / μ_NS
-
-    return ReNS
-
-
-def calculate_dPdL_grav() -> float:
-    dPdL_grav = ρ_slip * g * m.sin(θ)
-
-    return dPdL_grav
+def calculate_dPdL_grav(ρ_slip: float, g: float, θ: float) -> float:
+    return ρ_slip * g * m.sin(θ)
 
 
 def calculate_fn(ReNS: float, el: float) -> float:
@@ -54,8 +42,10 @@ def calculate_dPdL_friccao(fv: FlowVelocity, ReNS: float, y: float, el: float, �
     HL = calculate_Beggs_Brill(fv=fv)
 
     if 0 < HL < 1:
+        # Two Phase
         fd = calculate_fric_factor(ReNS=ReNS, y=y, el=el)
     else:
+        # Single Phase
         fd = calculate_fn(ReNS=ReNS, el=el)
 
     dPdL_friccao = - (fd * ρ_NS * fv.Vm ** 2) / (2 * dh)

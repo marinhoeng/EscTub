@@ -136,7 +136,7 @@ def base_case_study() -> InputData:
             riser,
         ],
         # Operational
-        Q_sc=1000,
+        Q_sc=1,
         P_res=600e5,
         T_res=370,
         IP=1e-9,

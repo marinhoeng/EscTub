@@ -1,46 +1,28 @@
 import math as m
-from pvt.fluid_data import FluidData
-from pvt.oil_properties import (calculate_Pb,
-                                calculate_Rs,
-                                calculate_Bg,
-                                calculate_Bo)
+
+from mesh.mesh import MeshData, InputData
+from pvt.pvt_properties import PVTProperties
 
 
-class FlowVelocity:
-    def __init__(self, Qo, Qg, Qgsc, Ql, Vsl, Vsg, λL):
-        self.Qo = Qo
-        self.Qg = Qg
-        self.Qgsc = Qgsc
-        self.Ql = Ql
-        self.Vsl = Vsl
-        self.Vsg = Vsg
-        self.Vm = Vsl + Vsg
-        self.λL = λL
+def calculate_flow_insitu(
+    data: InputData,
+    dh: float,
+    pvt: PVTProperties,
+    P: float,
+    Pb: float
+) -> tuple[float, float, float, float, float]:
+    Ap = (m.pi * dh ** 2) / 4
 
-
-def calculate_flow_velocity(fd: FluidData, Qlsc: float, P: float, T: float, Z: float) -> FlowVelocity:
-    Pb = calculate_Pb(fd=fd, P=P, T=T)
-    Rs = calculate_Rs(fd=fd, P=P, T=T)
-    Bg = calculate_Bg(fd=fd, P=P, T=T, Z=Z)
-    Bo = calculate_Bo(fd=fd, P=P, T=T, Rs=Rs, Pb=Pb)
-
-    Qostd = Qlsc
-    Ap = (m.pi * fd.dh ** 2) / 4
-    Qo = Qostd * Bo
-
-    if P > Pb:
-        Vsl = Qo / Ap
-        λL = 1.
-        Vsg = 0.
-        Qg = 0.
-        Qgsc = 0.
-    else:
-        Vsl = Qo / Ap
-        Qgsc = fd.RGO * Qlsc
-        Qg = (fd.RGO - Rs) * Qostd * Bg
+    Vsg = 0.
+    Qg = 0.
+    if P < Pb:
+        Qg = (data.RGO - pvt.Rs) * data.Q_sc * pvt.Bg
         Vsg = Qg / Ap
-        λL = Vsl / (Vsl + Vsg)
 
-    return FlowVelocity(Qo, Qg, Qgsc, Qo, Vsl, Vsg, λL)
+    Qo = data.Q_sc * pvt.Bo
+    Vsl = Qo / Ap
+    Vm = Vsl + Vsg
+    λL = Vsl / Vm
+    Qm = Qo + Qg
 
-# Giovanna_test
+    return Qm, Vm, Vsl, Vsg, λL
