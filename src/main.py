@@ -1,5 +1,3 @@
-
-
 # Input data
 
 Pe = 600.0  # bar
