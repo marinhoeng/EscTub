@@ -1,20 +1,14 @@
 import math as m
-from Flow_Velocity import FlowVelocity
 
 
-def calculate_Beggs_Brill(fv: FlowVelocity) -> float:
-    ρL = 0.
-    λL = fv.λL
-    Vsl = fv.Vsl
-    Vm = fv.Vm
-
+def calculate_Beggs_Brill(ρ_oil: float, λL: float, Vsl: float, Vm: float, dh: float, σog: float, θ: float, g: float) -> float:
     F_rm = Vm ** 2 / (g * dh)
     L1 = 316 * λL ** 0.302
     L2 = 0.0009252 * λL ** (-2.4684)
     L3 = 0.10 * λL ** (-1.4516)
     L4 = 0.5 * λL ** (-6.738)
 
-    Nlv = Vsl * (ρL / (g * σL))
+    Nlv = Vsl * (ρ_oil / (g * σog))
 
     if (λL < 0.4 and F_rm >= L1) or (λL >= 0.4 and F_rm > L4):
         Padrao = "Distribuido"
@@ -108,5 +102,3 @@ def calculate_Beggs_Brill(fv: FlowVelocity) -> float:
 
 result = calculate_Beggs_Brill()
 print("HL =", result)
-
-# Giovanna_test
