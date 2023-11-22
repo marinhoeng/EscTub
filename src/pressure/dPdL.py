@@ -40,7 +40,7 @@ def calculate_dPdL_friccao(HL: float, Rens: float, y: float, εr: float, Vm: flo
         # Single Phase
         fd = calculate_fn(Rens=Rens, εr=εr)
 
-    dPdL_friccao = - (fd * ρ_NS * Vm ** 2) / (2 * dh)
+    dPdL_friccao = (fd * ρ_NS * Vm ** 2) / (2 * dh)
 
     return dPdL_friccao
 
@@ -53,19 +53,19 @@ def calculate_Pwf(P_res: float, IP: float, Q_sc: float) -> float:
 
 
 def calculate_dPdL_Total(HL: float, Rens: float, y: float, εr: float, ρ_NS: float, ρ_slip: float, g: float,
-                         θ: float, Vm: float, Vsg: float, dh: float, Pwf: float) -> float:
+                         θ: float, Vm: float, Vsg: float, dh: float, P: float) -> float:
 
     dPdL_grav = calculate_dPdL_grav(ρ_slip=ρ_slip, g=g, θ=θ)
 
     dPdL_friccao = calculate_dPdL_friccao(HL=HL, Rens=Rens, y=y, εr=εr, Vm=Vm, ρ_NS=ρ_NS, dh=dh)
 
     if 0 < HL < 1:
-        Ek = (ρ_slip * Vm * Vsg) / Pwf
+        Ek = (ρ_slip * Vm * Vsg) / P
         if abs(Ek - 1.) < 1e-3:
             Ek = 0.999
     else:
         Ek = 0.
 
-    dPdL_Total = (dPdL_grav + dPdL_friccao) / (1. - Ek)
+    dPdL_Total = (-dPdL_grav - dPdL_friccao) / (1. - Ek)
 
     return dPdL_Total
