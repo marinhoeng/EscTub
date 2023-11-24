@@ -44,6 +44,7 @@ class OperationalData:
     Q_sc: float
     P_res: float
     T_res: float
+    IP: float
 
 
 @define(frozen=True)
