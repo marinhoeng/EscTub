@@ -37,6 +37,7 @@ def test_base(case) -> None:
     Pvec[0] = Pwf
     Tvec[0] = case.T_res
     λLvec = []
+    HLvec = []
     for i in range(sec_number-1):
 
         pvt = calculate_pvt_properties(fd=fd, P=float(Pvec[i]), T=float(Tvec[i]))
@@ -72,5 +73,6 @@ def test_base(case) -> None:
         Tvec[i+1] = Tvec[i] + dT_dL_Total * mesh[i].dL
 
         λLvec.append(λL)
+        HLvec.append(HL)
 
     assert 1 == 1

@@ -1,4 +1,7 @@
 import math as m
+
+import numpy as np
+
 from pvt.fluid_data import Unit, FluidData
 
 

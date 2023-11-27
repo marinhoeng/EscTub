@@ -137,14 +137,14 @@ def base_case_study() -> InputData:
             riser,
         ],
         # Operational
-        Q_sc=1.1574e-3,
+        Q_sc=0.011574 * 3,
         P_res=600e5,
         T_res=370,
         IP=Unit.mCalc_Conv_IP(4000, 'm3/(kpa·d)', 'm3/(pa·s)'),
         # PVT
         API=35,
         dg=0.725,
-        RGO=25,
+        RGO=1220,
     )
 
 

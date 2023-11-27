@@ -1,5 +1,6 @@
 import math as m
 
+
 def calculate_Beggs_Brill(
     ρ_oil: float,
     λL: float,
@@ -10,13 +11,12 @@ def calculate_Beggs_Brill(
     θ: float,
     g: float
 ) -> float:
-
     F_rm = Vm ** 2 / (g * dh)
     L1 = 316 * λL ** 0.302
     L2 = 0.0009252 * λL ** (-2.4684)
     L3 = 0.10 * λL ** (-1.4516)
     L4 = 0.5 * λL ** (-6.738)
-    Nlv = Vsl * (ρ_oil / (g * σog))**0.25
+    Nlv = Vsl * (ρ_oil / (g * σog)) ** 0.25
 
     def calculate_HL_segregado(λL: float, Nlv: float, F_rm: float, θ: float) -> float:
         a = 0.98
@@ -33,6 +33,9 @@ def calculate_Beggs_Brill(
 
         HLo_segregado = (a * λL ** b) / F_rm ** c
 
+        if HLo_segregado < λL:
+            HLo_segregado = λL
+
         HL_segregado = HLo_segregado * ψ
 
         return HL_segregado
@@ -47,10 +50,14 @@ def calculate_Beggs_Brill(
         f = -0.4473
         gg = 0.0978
 
-        C = (1 - λL) * m.log(dlinha * λL ** ee * Nlv ** f * F_rm ** gg)
+        C = (1 - λL) * m.log(dlinha * (λL ** ee) * (Nlv ** f) * (F_rm ** gg))
         ψ = 1 + (C * (m.sin(1.8 * θ) - 0.333 * (m.sin(1.8 * θ)) ** 3))
 
-        HLo_intermitente = (a * λL ** b) / F_rm ** c
+        HLo_intermitente = (a * λL ** b) / (F_rm ** c)
+
+        if HLo_intermitente < λL:
+            HLo_intermitente = λL
+
         HL_intermitente = HLo_intermitente * ψ
         return HL_intermitente
 
@@ -62,6 +69,9 @@ def calculate_Beggs_Brill(
         ψ = 1
 
         HLo_distribuido = (a * λL ** b) / F_rm ** c
+
+        if HLo_distribuido < λL:
+            HLo_distribuido = λL
 
         HL_distribuido = HLo_distribuido * ψ
 
@@ -97,10 +107,8 @@ def calculate_Beggs_Brill(
 
     else:
         raise ValueError("BB failed.")
+
+    if HL > (1. - 1e-6):
+        raise ValueError("BB failed.")
+
     return HL
-
-
-HL = calculate_Beggs_Brill(51.207, 0.556, 17.915, 32.233, 1/3, 0.0005549, 90, 32.2) #aplicacao ex da aula - bateu o
-                                                                                    # resultado. uso de unidades
-                                                                                    #de campo
-print(HL)
