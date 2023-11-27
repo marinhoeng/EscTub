@@ -1,7 +1,6 @@
 import numpy as np
 from typing import Sequence
 from attrs import define
-from pvt.pvt_properties import PVTProperties
 from thermal.tec import tec_section, calculate_tec_section
 
 

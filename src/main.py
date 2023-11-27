@@ -1,6 +1,7 @@
 # Input data
 import numpy as np
-
+from numpy.typing import NDArray
+from attrs import define
 from pressure.Flow_Velocity import calculate_flow_insitu
 from pressure.dPdL import (
     calculate_dPdL_Total,
@@ -9,7 +10,6 @@ from pressure.dPdL import (
     calculate_y,
 )
 from pvt.fluid_data import FluidData
-from _tests.test_mesh import base_case_study
 from mesh.mesh import building_mesh, InputData
 from pvt.pvt_properties import calculate_pvt_properties, calculate_pvt_properties_mixture
 from pressure.Beggs_Brill import calculate_Beggs_Brill
@@ -19,7 +19,12 @@ from thermal.temperature import calculate_dTdL
 g = 9.81
 
 
-def run_analysis(case: InputData) -> None:
+@define(frozen=True)
+class ResultsData:
+    Pvec: NDArray[np.float64]
+
+
+def run_analysis(case: InputData) -> ResultsData:
     mesh = building_mesh(data=case)
 
     sec_number = len(mesh)
@@ -75,11 +80,6 @@ def run_analysis(case: InputData) -> None:
         λLvec.append(λL)
         HLvec.append(HL)
 
-    print(Pvec)
-
-
-def test_base_case(base_case_study) -> None:
-
-    run_analysis(base_case_study)
-
-    assert 1 == 1
+    return ResultsData(
+        Pvec=Pvec
+    )
