@@ -61,8 +61,13 @@ def calculate_dPdL_Total(HL: float, Rens: float, y: float, εr: float, ρ_NS: fl
 
     if 0 < HL < 1:
         Ek = (ρ_slip * Vm * Vsg) / P
-        if abs(Ek - 1.) < 1e-3:
+
+        dEk = abs(Ek - 1.)
+        if dEk < 1e-3:
             Ek = 0.999
+
+        if dEk > (1 + 1e-3):
+            Ek = 0.
     else:
         Ek = 0.
 

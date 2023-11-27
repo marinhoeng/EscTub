@@ -144,7 +144,7 @@ def base_case_study() -> InputData:
         # PVT
         API=35,
         dg=0.725,
-        RGO=1220,
+        RGO=1150,
     )
 
 

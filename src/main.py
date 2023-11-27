@@ -9,8 +9,8 @@ from pressure.dPdL import (
     calculate_y,
 )
 from pvt.fluid_data import FluidData
-from _tests.test_mesh import base_case_study as case
-from mesh.mesh import building_mesh, OperationalData
+from _tests.test_mesh import base_case_study
+from mesh.mesh import building_mesh, InputData
 from pvt.pvt_properties import calculate_pvt_properties, calculate_pvt_properties_mixture
 from pressure.Beggs_Brill import calculate_Beggs_Brill
 from thermal.temperature import calculate_dTdL
@@ -19,7 +19,7 @@ from thermal.temperature import calculate_dTdL
 g = 9.81
 
 
-def test_base(case) -> None:
+def run_analysis(case: InputData) -> None:
     mesh = building_mesh(data=case)
 
     sec_number = len(mesh)
@@ -74,5 +74,12 @@ def test_base(case) -> None:
 
         λLvec.append(λL)
         HLvec.append(HL)
+
+    print(Pvec)
+
+
+def test_base_case(base_case_study) -> None:
+
+    run_analysis(base_case_study)
 
     assert 1 == 1
