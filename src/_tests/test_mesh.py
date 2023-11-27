@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from thermal.tec import tec_section
 from mesh.mesh import building_mesh, InputData
+from pvt.fluid_data import Unit
 
 
 @pytest.fixture
@@ -136,14 +137,14 @@ def base_case_study() -> InputData:
             riser,
         ],
         # Operational
-        Q_sc=1000,
+        Q_sc=0.011574 * 3,
         P_res=600e5,
         T_res=370,
-        IP=1e-9,
+        IP=Unit.mCalc_Conv_IP(4000, 'm3/(kpa·d)', 'm3/(pa·s)'),
         # PVT
         API=35,
         dg=0.725,
-        RGO=325,
+        RGO=1150,
     )
 
 

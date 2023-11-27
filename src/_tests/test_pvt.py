@@ -137,7 +137,7 @@ def test_PVTProperties(num_regression: NumericRegressionFixture) -> None:
 
     fd = fd.set_fluid_data(API=30.0, dg=0.72, RGO=125)
 
-    PVTResults = calculate_pvt_properties(fd=fd, P=100e5, T=350, λL=0.555, HL=0.575)
+    PVTResults = calculate_pvt_properties(fd=fd, P=100e5, T=350)
 
     num_regression.check(
         {
@@ -154,10 +154,6 @@ def test_PVTProperties(num_regression: NumericRegressionFixture) -> None:
             "Bo": PVTResults.Bo,
             "cp_gas": PVTResults.cp_gas,
             "cp_oil": PVTResults.cp_oil,
-            "ρ_NS": PVTResults.ρ_NS,
-            "μ_NS": PVTResults.μ_NS,
-            "cp_NS": PVTResults.cp_NS,
-            "ρ_slip": PVTResults.ρ_slip,
             "σog": PVTResults.σog,
         }
     )

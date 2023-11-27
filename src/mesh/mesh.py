@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Sequence
 from attrs import define
+from pvt.pvt_properties import PVTProperties
 from thermal.tec import tec_section, calculate_tec_section
 
 
@@ -43,11 +44,17 @@ class OperationalData:
     Q_sc: float
     P_res: float
     T_res: float
+    IP: float
 
 
 @define(frozen=True)
 class FlowData:
-    Q: float
+    Qm: float
+    Vm: float
+    Vsl: float
+    Vsg: float
+    λL: float
+    HL: float
 
 
 @define(frozen=True)
@@ -72,7 +79,7 @@ def building_mesh(data: InputData) -> list[MeshData]:
 
     # Auxiliary functions
     def calculate_env_temperature_gradient(
-        T_env_top: float, T_env_button: float, TVD_section: float
+            T_env_top: float, T_env_button: float, TVD_section: float
     ) -> float:
         return (T_env_top - T_env_button) / TVD_section
 
@@ -80,7 +87,7 @@ def building_mesh(data: InputData) -> list[MeshData]:
         return T_button + T_grad * TVD
 
     def get_section_tec(
-        MD_start: float, MD_end: float, tec_sections: Sequence[tec_section]
+            MD_start: float, MD_end: float, tec_sections: Sequence[tec_section]
     ) -> float:
         N_sections = len(tec_sections)
         tec_calc = np.nan
