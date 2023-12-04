@@ -45,6 +45,9 @@ class PVTPropertiesMixture:
     cp_NS: float
     cp_slip: float
     ρ_slip: float
+    μ_slip: float
+
+
 
 
 def calculate_pvt_properties(fd: FluidData, P: float, T: float) -> PVTProperties:
@@ -100,6 +103,7 @@ def calculate_pvt_properties_mixture(PVTOG: PVTProperties, λL: float, HL: float
     cp_NS = PVTOG.cp_oil * λL + PVTOG.cp_gas * (1. - λL)
     cp_slip = PVTOG.cp_oil * HL + PVTOG.cp_gas * (1. - HL)
     ρ_slip = PVTOG.ρ_oil * HL + PVTOG.ρ_gas * (1. - HL)
+    μ_slip = PVTOG.μ_oil * HL + PVTOG.μ_gas * (1. - HL)
 
     return PVTPropertiesMixture(
         ρ_NS=ρ_NS,
@@ -107,5 +111,6 @@ def calculate_pvt_properties_mixture(PVTOG: PVTProperties, λL: float, HL: float
         cp_NS=cp_NS,
         cp_slip=cp_slip,
         ρ_slip=ρ_slip,
+        μ_slip=μ_slip
     )
 

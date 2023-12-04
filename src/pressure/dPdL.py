@@ -40,7 +40,7 @@ def calculate_dPdL_friccao(HL: float, Rens: float, y: float, εr: float, Vm: flo
         # Single Phase
         fd = calculate_fn(Rens=Rens, εr=εr)
 
-    dPdL_friccao = (fd * ρ_NS * Vm ** 2) / (2 * dh)
+    dPdL_friccao = (fd * ρ_NS * Vm ** 2) / (2 * dh) # verificar se é ρ_slip (provavel que sim)
 
     return dPdL_friccao
 
