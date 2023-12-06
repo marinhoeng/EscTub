@@ -5,13 +5,13 @@ Unit: TTPUnitConvert = TTPUnitConvert()
 
 class FluidData:
     def __init__(self):
-        self.API = 0.0
-        self.do = 0.0
-        self.dg = 0.0
-        self.MMg = 0.0
-        self.RGO = 0.0
-        self.Ppc = 0.0
-        self.Tpc = 0.0
+        self.API: float = 0.0
+        self.do: float = 0.0
+        self.dg: float = 0.0
+        self.MMg: float = 0.0
+        self.RGO: float = 0.0
+        self.Ppc: float = 0.0
+        self.Tpc: float = 0.0
         self.Psc: float = 101325.0  # Pa
         self.Tsc: float = 288.706  # K
         self.R: float = 8.314  # Pa*m3/mol*K
@@ -23,13 +23,13 @@ class FluidData:
 
         Ppc, Tpc = calculate_critical_properties(dg=dg)
 
-        self.dg = dg
-        self.API = API
-        self.do = do
-        self.RGO = RGO
-        self.MMg = MMg
-        self.Ppc = Ppc
-        self.Tpc = Tpc
+        self.dg: float = dg
+        self.API: float = API
+        self.do: float = do
+        self.RGO: float = RGO
+        self.MMg: float = MMg
+        self.Ppc: float = Ppc
+        self.Tpc: float = Tpc
 
         return self
 

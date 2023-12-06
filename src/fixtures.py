@@ -266,7 +266,7 @@ def base_case_study_2() -> InputData:
         θ_flowline=0,
         θ_riser=90,
         # Thermal
-        Tenv_sc=303.15,
+        Tenv_sc=271.15,
         Tenv_seabed=277.15,
         Tenv_res=353.15,
         tec_sections=[
@@ -282,13 +282,14 @@ def base_case_study_2() -> InputData:
         # Operational
         Q_sc=0.011574 * 3,
         P_res=700e5,
-        T_res=500,
+        T_res=353.15,
         IP=Unit.mCalc_Conv_IP(4000, 'm3/(kpa·d)', 'm3/(pa·s)'),
         # PVT
-        API=25,
-        dg=0.725,
-        RGO=450,
+        API=35,
+        dg=0.7,
+        RGO=250,
     )
+
 
 @pytest.fixture
 def base_case_study_3() -> InputData:
@@ -408,7 +409,7 @@ def base_case_study_3() -> InputData:
         θ_flowline=0,
         θ_riser=90,
         # Thermal
-        Tenv_sc=303.15,
+        Tenv_sc=306.15,
         Tenv_seabed=277.15,
         Tenv_res=353.15,
         tec_sections=[
@@ -422,12 +423,12 @@ def base_case_study_3() -> InputData:
             riser,
         ],
         # Operational
-        Q_sc=0.011574 * 5,
+        Q_sc=0.011574 * 3,
         P_res=700e5,
-        T_res=500,
+        T_res=353.15,
         IP=Unit.mCalc_Conv_IP(4000, 'm3/(kpa·d)', 'm3/(pa·s)'),
         # PVT
-        API=34,
-        dg=0.725,
-        RGO=156.73,
+        API=15,
+        dg=0.7,
+        RGO=250,
     )

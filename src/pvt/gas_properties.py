@@ -1,5 +1,5 @@
 import math as m
-from pvt.fluid_data import Unit, FluidData
+from src.pvt.fluid_data import Unit, FluidData
 
 
 def calculate_reduced_properties(
@@ -15,7 +15,7 @@ def calculate_Z(fd: FluidData, P: float, T: float) -> float:
     Ppr, Tpr = calculate_reduced_properties(fd=fd, P=P, T=T)
 
     # Z Factor - Shell's Correlation
-    Za = -0.101 - 0.36 * (Tpr + 1.3868) * ((Tpr - 0.919) ** 0.5)
+    Za = -0.101 - 0.36 * Tpr + 1.3868 * ((Tpr - 0.919) ** 0.5)
     Zb = 0.21 + (0.04275 / (Tpr - 0.65))
     Zc = 0.6222 - 0.224 * Tpr
     Zd = (0.0657 / (Tpr - 0.86)) - 0.037

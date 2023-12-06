@@ -1,7 +1,7 @@
 import math as m
 
-from mesh.mesh import MeshData, InputData
-from pvt.pvt_properties import PVTProperties
+from src.mesh.mesh import MeshData, InputData
+from src.pvt.pvt_properties import PVTProperties
 
 
 def calculate_flow_insitu(

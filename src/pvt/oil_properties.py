@@ -1,6 +1,6 @@
 import math as m
-from pvt.gas_properties import calculate_Bg
-from pvt.fluid_data import Unit, FluidData
+from src.pvt.gas_properties import calculate_Bg
+from src.pvt.fluid_data import Unit, FluidData
 
 
 def calculate_Rs(fd: FluidData, P: float, T: float, Pb: float | None = None) -> float:
@@ -14,7 +14,7 @@ def calculate_Rs(fd: FluidData, P: float, T: float, Pb: float | None = None) -> 
     T_F = Unit.mCalc_Conv_Temperature(T, "K", "F")
     P_psi = Unit.mCalc_Conv_Pressure(P, "Pa", "psi")
 
-    # Petrosky-Farshad's Correlation
+    # Petrosky-Farshad's Correlation'
     A = 7.916e-4 * (fd.API**1.541) - 4.561e-5 * (T_F**1.3911)
     Rs_scf_stb = (
         ((P_psi / 112.727) + 12.34) * (fd.dg**0.8439) * (10**A)

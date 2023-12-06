@@ -3,8 +3,8 @@ import pytest
 from pytest import approx
 from pytest_regressions.num_regression import NumericRegressionFixture
 
-from pvt.fluid_data import FluidData
-from pvt.gas_properties import (
+from src.pvt.fluid_data import FluidData
+from src.pvt.gas_properties import (
     calculate_reduced_properties,
     calculate_Z,
     calculate_Bg,
@@ -12,7 +12,7 @@ from pvt.gas_properties import (
     calculate_Cg,
     calculate_μ_gas,
 )
-from pvt.oil_properties import (
+from src.pvt.oil_properties import (
     calculate_Rs,
     calculate_Pb,
     calculate_ρ_oil,
@@ -20,7 +20,7 @@ from pvt.oil_properties import (
     calculate_Bo,
     calculate_Co,
 )
-from pvt.pvt_properties import (
+from src.pvt.pvt_properties import (
     calculate_pvt_properties,
 )
 

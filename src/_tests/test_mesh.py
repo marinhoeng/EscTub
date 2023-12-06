@@ -1,5 +1,5 @@
-from mesh.mesh import building_mesh
-from fixtures import base_case_study
+from src.mesh.mesh import building_mesh
+from src.fixtures import base_case_study
 
 
 def test_well(base_case_study) -> None:

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from numpy.typing import NDArray
-from thermal.tec import tec_section, calculate_tec_section
+from src.thermal.tec import tec_section, calculate_tec_section
 
 
 def test_section_initialization_failed() -> None:

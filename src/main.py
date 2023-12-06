@@ -10,6 +10,7 @@ from pressure.dPdL import (
     calculate_y,
 )
 from pvt.fluid_data import FluidData
+from pvt import oil_properties, gas_properties
 from mesh.mesh import building_mesh, InputData
 from pvt.pvt_properties import (calculate_pvt_properties,
                                 calculate_pvt_properties_mixture,
@@ -108,15 +109,24 @@ def run_analysis(case: InputData) -> ResultsData:
 
         λLvec[i] = λL
         HLvec[i] = HL
+
         ρ_slip_vec[i] = pvt_mixture.ρ_slip
         μ_slip_vec[i] = pvt_mixture.μ_slip
+
         Pb_vec[i] = pvt.Pb
         Rs_vec[i] = pvt.Rs
+        Bo_vec[i] = pvt.Bo
+        ρ_oil_vec[i] = pvt.ρ_oil
+        ρ_gas_vec[i] = pvt.ρ_gas
+        μ_oil_vec[i] = pvt.μ_oil
+        μ_gas_vec[i] = pvt.μ_gas
 
     λLvec[-1] = λLvec[-2]
     HLvec[-1] = HLvec[-2]
+
     ρ_slip_vec[-1] = ρ_slip_vec[-2]
     μ_slip_vec[-1] = μ_slip_vec[-2]
+
     Pb_vec[-1] = Pb_vec[-2]
     Rs_vec[-1] = Rs_vec[-2]
     Bo_vec[-1] = Bo_vec[-2]

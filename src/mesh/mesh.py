@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Sequence
 from attrs import define
-from thermal.tec import tec_section, calculate_tec_section
+from src.thermal.tec import tec_section, calculate_tec_section
 
 
 @define(frozen=True)
